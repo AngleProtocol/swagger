@@ -1,0 +1,658 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: Angle API
+  description: API to track Angle Protocol state
+servers:
+  - url: 'https://new-api-dot-angle-1.ew.r.appspot.com'
+  - url: 'http://localhost:5001/'
+paths:
+  /v1/app:
+    get:
+      description: Return Prices and Tokens used by Angle Protocol
+      parameters:
+        - name: chainId
+          in: query
+          description: Chain requested - Default 1
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: State
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tokens:
+                    $ref: '#/components/schemas/tokens'
+                  prices:
+                    $ref: '#/components/schemas/prices'
+  /v1/prices:
+    get:
+      description: Return Prices used by Angle Protocol
+      parameters:
+        - name: chainId
+          in: query
+          description: Chain requested - Default 1
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: State
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/prices'
+  /v1/balances:
+    get:
+      description: Return the balances for tokens in the for Angle token list
+      parameters:
+        - name: user
+          in: query
+          description: User Blockchain `address`
+          schema:
+            type: string
+        - name: chainId
+          in: query
+          description: Chain of the contract - Default 1
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: State
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/balances'
+  /v1/allowances:
+    get:
+      description: Return the allowances for tokens in the for Angle token list
+      parameters:
+        - name: user
+          in: query
+          description: User Blockchain `address`
+          schema:
+            type: string
+        - name: spender
+          in: query
+          description: Sender Blockchain `address`
+          schema:
+            type: string
+        - name: chainId
+          in: query
+          description: Chain of the contract - Default 1
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: State
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/allowances'
+  /v1/dao:
+    get:
+      description: Return data related to the ANGLE and veANGLE tokens for a given user including vote and rewards data
+      parameters:
+        - name: chainId
+          in: query
+          description: Chain requested - Default 1
+          schema:
+            type: integer
+        - name: user
+          in: query
+          description: User Blockchain `address`
+          schema:
+            type: string
+      responses:
+        '200':
+          description: State
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  veANGLE:
+                    schema: null
+                    $ref: '#/components/schemas/veANGLE'
+                  ANGLE:
+                    schema: null
+                    $ref: '#/components/schemas/ANGLE'
+                  rewardsData:
+                    schema: null
+                    $ref: '#/components/schemas/rewardsData'
+                  gauges:
+                    schema: null
+                    $ref: '#/components/schemas/gauges'
+  /v1/pools:
+    get:
+      description: Return data related to pools (collateral / agToken)
+      parameters:
+        - name: user
+          in: query
+          description: User Blockchain `address`
+          schema:
+            type: string
+        - name: chainId
+          in: query
+          description: Chain of the contract - Default 1
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: State
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/pools'
+  /v1/incentives:
+    get:
+      description: Return data related to incentivized stuffs
+      parameters:
+        - name: user
+          in: query
+          description: User Blockchain `address`
+          schema:
+            type: string
+        - name: isTest
+          in: query
+          description: Optional flag to get Rinkeby data
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: State
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/incentives'
+  /v1/perpetuals:
+    get:
+      description: Return data related to perpetuals of a given user
+      parameters:
+        - name: user
+          in: query
+          description: User Blockchain `address`
+          schema:
+            type: string
+        - name: chainId
+          in: query
+          description: Chain of the contract - Default 1
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: State
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/perpetuals'
+  /v1/vaultManagers:
+    get:
+      description: Return the global state of `VaultManagers` listed by the treasury
+      parameters:
+        - name: chainId
+          in: query
+          description: ChainId - Default 1
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: State
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/vaultManagers'
+  /v1/vaults:
+    get:
+      description: Return all vaults for a user on a chain
+      parameters:
+        - name: user
+          in: query
+          description: User Blockchain `address`
+          schema:
+            type: string
+        - name: chainId
+          in: query
+          description: Chain of the contract - Default 1
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: State
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/vaults'
+components:
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
+  schemas:
+    tokens:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Token's name
+        address:
+          type: string
+          description: Token's address
+        decimals:
+          type: number
+          description: ERC20 decimals
+        symbol:
+          type: string
+          description: Token's symbol
+        useInSwap:
+          type: boolean
+          description: Whether this token is used in Angle swaps
+        hasPermit:
+          type: boolean
+          description: Whether the token supports permit
+        permitVersion:
+          type: string
+          description: 'Permit version, otherwise ''-1'''
+        logoURI:
+          type: string
+          description: Logo URI
+        tags:
+          type: array
+          items:
+            type: string
+          description: Token tags
+    prices:
+      type: array
+      items:
+        type: object
+        properties:
+          token:
+            type: string
+            description: Token symbol
+          rate:
+            type: number
+            description: 'Token price, in USD'
+    allowances:
+      type: array
+      items:
+        type: object
+        additionalProperties:
+          type: object
+          properties:
+            symbol:
+              type: string
+              description: Token symbol
+            allowance:
+              type: string
+              description: Token allowance
+    ANGLE:
+      type: object
+      properties:
+        totalSupply:
+          type: number
+        circulatingSupply:
+          type: number
+        balance:
+          type: string
+    balances:
+      type: array
+      items:
+        type: object
+        additionalProperties:
+          type: object
+          properties:
+            symbol:
+              type: string
+              description: Token symbol
+            balance:
+              type: string
+              description: Token balance
+    gauges:
+      type: object
+      properties:
+        totalWeight:
+          type: number
+        voteUserPower:
+          type: number
+        list:
+          type: object
+          additionalProperties:
+            type: object
+            properties:
+              address:
+                type: string
+              name:
+                type: string
+              icon:
+                type: string
+              type:
+                type: number
+              currentWeight:
+                type: number
+              absoluteWeight:
+                type: number
+              futureWeight:
+                type: number
+              userWeight:
+                type: number
+              lastUserVote:
+                type: number
+              tvl:
+                type: number
+              apr:
+                type: number
+              workingSupply:
+                type: number
+              totalSupply:
+                type: number
+              workingBalance:
+                type: number
+              balance:
+                type: number
+    incentives:
+      type: object
+      additionalProperties:
+        type: object
+        properties:
+          address:
+            type: string
+          name:
+            type: string
+          deprecated:
+            type: boolean
+          underlyingToken:
+            type: object
+            properties:
+              balances:
+                type: string
+              allowance:
+                type: string
+              address:
+                type: string
+              base:
+                type: number
+          rewardTokens:
+            type: array
+            items:
+              type: object
+              properties:
+                symbol:
+                  type: string
+                address:
+                  type: string
+                amount:
+                  type: number
+          network:
+            type: number
+          platform:
+            type: string
+          icon:
+            type: string
+          tvl:
+            type: number
+          deposit:
+            type: object
+            properties:
+              amount:
+                type: string
+              usdValue:
+                type: number
+          apr:
+            type: object
+            properties:
+              apr:
+                type: object
+              value:
+                type: number
+    perpetuals:
+      type: object
+      additionalProperties:
+        type: object
+        properties:
+          id:
+            type: string
+          perpetualID:
+            type: string
+          owner:
+            type: string
+          margin:
+            type: string
+          committedAmount:
+            type: string
+          entryRate:
+            type: string
+          perpetualManager:
+            type: string
+          stableAddress:
+            type: string
+          collatAddress:
+            type: string
+          decimals:
+            type: string
+          stableName:
+            type: string
+          collatName:
+            type: string
+          liquidationPrice:
+            type: string
+          openingBlockNumber:
+            type: string
+          openingTimestamp:
+            type: string
+          lastUpdateBlockNumber:
+            type: string
+          lastUpdateTimestamp:
+            type: string
+          status:
+            type: string
+          claimable:
+            type: number
+    rewardsData:
+      type: object
+      properties:
+        times:
+          type: array
+          items:
+            type: number
+        tokenPerWeek:
+          type: array
+          items:
+            type: number
+        claimable:
+          type: array
+          items:
+            type: number
+        totalClaimable:
+          type: string
+    pools:
+      type: object
+      additionalProperties:
+        type: object
+        properties:
+          collateralSymbol:
+            type: string
+          stablecoinSymbol:
+            type: string
+          decimals:
+            type: number
+          liquidityGaugeAddress:
+            type: string
+          perpetualManagerAddress:
+            type: string
+          poolManagerAddress:
+            type: string
+          collateralAddress:
+            type: string
+          stablecoinAddress:
+            type: string
+          lower:
+            type: string
+          upper:
+            type: string
+          stocksUsers:
+            type: string
+          collatRatio:
+            type: string
+          sanRate:
+            type: string
+          slpData:
+            type: object
+            properties:
+              slippage:
+                type: string
+          poolManagerBalance:
+            type: string
+          totalHedgeAmount:
+            type: string
+          targetHAHedge:
+            type: string
+          limitHAHedge:
+            type: string
+          maintenanceMargin:
+            type: string
+          maxLeverage:
+            type: string
+          lockTime:
+            type: string
+          perpRewardRate:
+            type: string
+          periodFinish:
+            type: string
+          aprFromFees:
+            type: number
+          aprFromInterests:
+            type: number
+          aprFromAngle:
+            type: number
+          stablecoinBalance:
+            type: string
+          collateralBalance:
+            type: string
+          sanTokenBalance:
+            type: string
+          gaugeBalance:
+            type: string
+          gaugeWorkingBalance:
+            type: string
+          boost:
+            type: number
+          theoricBoost:
+            type: number
+          collateralAllowance:
+            type: string
+          collateralRouterAllowance:
+            type: string
+    veANGLE:
+      type: object
+      properties:
+        totalSupply:
+          type: number
+        totalLocked:
+          type: number
+        rate:
+          type: number
+        nextRate:
+          type: number
+        locked:
+          type: number
+        endLock:
+          type: number
+        balance:
+          type: string
+        allowance:
+          type: string
+    vaultManagers:
+      type: object
+      additionalProperties:
+        type: object
+        properties:
+          address:
+            type: string
+            description: address of the `VaultManager`
+          symbol:
+            type: string
+            description: symbol of the `VaultManager`
+          collateral:
+            type: number
+            description: Address of the collateral token
+          collateralHasPermit:
+            type: boolean
+          collateralPermitVersion:
+            type: number
+          stablecoin:
+            type: string
+            description: Address of the minted stablecoin
+          swapper:
+            type: string
+          decimals:
+            type: string
+          treasury:
+            type: string
+            description: Address of the treasury
+          borrowFee:
+            type: number
+            description: Percentage of up-front fees
+          stabilityFee:
+            type: number
+            description: Annual interest rate
+          liquidationPenalty:
+            type: number
+            description: Percentage of penalty on liquidated debt
+          minCollateralRatio:
+            type: number
+            description: Min percentage of collateral versus debt
+          dust:
+            type: number
+            description: Minimum debt
+          totalCollateral:
+            type: number
+            description: Total collateral on the contract
+          totalDebt:
+            type: number
+            description: Total debt on the contract
+          rate:
+            type: number
+    vaults:
+      type: object
+      additionalProperties:
+        type: object
+        properties:
+          address:
+            type: string
+            description: address of the `VaultManager`
+          symbol:
+            type: string
+            description: symbol of the `VaultManager`
+          id:
+            type: number
+            description: ERC721 standard `tokenID`
+          collateral:
+            type: number
+            description: Address of the collateral token
+          stablecoin:
+            type: string
+            description: Address of the minted stablecoin
+          rate:
+            type: number
+            description: Underlying oracle price
+          collateralAmount:
+            type: number
+            description: Collateral added to the vault
+          debt:
+            type: number
+            description: Amount currently due
+          debtString:
+            type: string
+            description: 'Amount currently due, as a string for precision'
+          collateralRatio:
+            type: number
+            description: 'Collateral over Debt, in %'
+          liquidationPrice:
+            type: number
+            description: 'Current liquidation price threshold, in USD'
