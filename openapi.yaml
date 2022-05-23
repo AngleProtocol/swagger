@@ -4,8 +4,7 @@ info:
   title: Angle API
   description: API to track Angle Protocol state
 servers:
-  - url: 'https://new-api-dot-angle-1.ew.r.appspot.com'
-  - url: 'http://localhost:5001/'
+  - url: 'https://api.angle.money/'
 paths:
   /v1/app:
     get:
