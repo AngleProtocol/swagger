@@ -4,7 +4,7 @@ info:
   title: Angle API
   description: API to track Angle Protocol state
 servers:
-  - url: 'https://api.angle.money/'
+  - url: 'https://api.angle.money'
 paths:
   /v1/app:
     get:
