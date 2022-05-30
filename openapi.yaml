@@ -2,22 +2,22 @@ openapi: 3.0.0
 info:
   version: 1.0.0
   title: Angle API
-  description: API to track Angle Protocol state
+  description: API to track the Angle Protocol state
 servers:
   - url: 'https://api.angle.money'
 paths:
   /v1/app:
     get:
-      description: Return Prices and Tokens used by Angle Protocol
+      description: Return data about tokens at stake in the Angle Protocol along with their price.
       parameters:
         - name: chainId
           in: query
-          description: Chain requested - Default 1
+          description: Chain requested - Default is 1 (Ethereum mainnet)
           schema:
             type: integer
       responses:
         '200':
-          description: State
+          description: Maps token addresses on the requested chain to their associated data and returns a list of pairs of tokens identified by their name with their price (in USD).
           content:
             application/json:
               schema:
@@ -29,94 +29,94 @@ paths:
                     $ref: '#/components/schemas/prices'
   /v1/prices:
     get:
-      description: Return Prices used by Angle Protocol
+      description: Return prices for tokens used by the Angle Protocol.
       parameters:
         - name: chainId
           in: query
-          description: Chain requested - Default 1
+          description: Chain requested - Default is 1 (Ethereum mainnet)
           schema:
             type: integer
       responses:
         '200':
-          description: State
+          description: List of pairs of tokens identified by their name with their price (in USD).
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/prices'
   /v1/apr:
     get:
-      description: Return APRs computed by Angle Protocol - use cautiously data may be inaccurate
+      description: 'Return APRs for tokens used by the Angle Protocol. Data is based on approximations, it should be cautiously taken.'
       responses:
         '200':
-          description: State
+          description: Mapping between a token name and the overall APR you can get with it and optionally a breakdown on the APR displayed
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/apr'
   /v1/balances:
     get:
-      description: Return the balances for tokens in the for Angle token list
+      description: Return the balances for tokens in the for Angle token list for a given user.
       parameters:
         - name: user
           in: query
-          description: User Blockchain `address`
+          description: User blockchain `address`
           schema:
             type: string
         - name: chainId
           in: query
-          description: Chain of the contract - Default 1
+          description: Chain requested - Default is 1 (Ethereum mainnet)
           schema:
             type: integer
       responses:
         '200':
-          description: State
+          description: 'Mapping between a token address and for each token the user balance, the decimals of the token as well as the token name'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/balances'
   /v1/allowances:
     get:
-      description: Return the allowances for tokens in the for Angle token list
+      description: Return the allowances for tokens in the for Angle token list for a given user
       parameters:
         - name: user
           in: query
-          description: User Blockchain `address`
+          description: User blockchain `address`
           schema:
             type: string
         - name: spender
           in: query
-          description: Sender Blockchain `address`
+          description: Spender blockchain `address`
           schema:
             type: string
         - name: chainId
           in: query
-          description: Chain of the contract - Default 1
+          description: Chain requested - Default is 1 (Ethereum mainnet)
           schema:
             type: integer
       responses:
         '200':
-          description: State
+          description: 'Mapping between a token address and for each token the allowance of the user with respect to the spender, the decimals of the token as well as the token symbol'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/allowances'
   /v1/dao:
     get:
-      description: Return data related to the ANGLE and veANGLE tokens for a given user including vote and rewards data
+      description: Return data related to gauges as well as to the ANGLE and veANGLE tokens for a given user including vote and rewards data
       parameters:
         - name: chainId
           in: query
-          description: Chain requested - Default 1
+          description: Chain requested - Default is 1 (Ethereum mainnet)
           schema:
             type: integer
         - name: user
           in: query
-          description: User Blockchain `address`
+          description: User blockchain `address`. This address is optional and the query could work without.
           schema:
             type: string
       responses:
         '200':
-          description: State
+          description: 'Different elements are returned by this call. Under the gauges entry, is returned a mapping between a gauge address and all its related data (with some specific user information). This call also returns veANGLE and ANGLE related data, as well as data related to the weekly rewards which are given to veANGLE holders.'
           content:
             application/json:
               schema:
@@ -136,32 +136,32 @@ paths:
                     $ref: '#/components/schemas/gauges'
   /v1/pools:
     get:
-      description: Return data related to pools (collateral / agToken)
+      description: Return data related to the pools (collateral / agToken) of the Core Module of the protocol
       parameters:
         - name: user
           in: query
-          description: User Blockchain `address`
+          description: User blockchain `address` (optional)
           schema:
             type: string
         - name: chainId
           in: query
-          description: Chain of the contract - Default 1
+          description: Chain requested - Default is 1 (Ethereum mainnet)
           schema:
             type: integer
       responses:
         '200':
-          description: State
+          description: Mapping between `PoolManager` addresses of the Core Module and all the data related to it
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/pools'
   /v1/incentives:
     get:
-      description: Return data related to incentivized stuffs
+      description: 'Return data related to incentivized pools, by Angle or other partners'
       parameters:
         - name: user
           in: query
-          description: User Blockchain `address`
+          description: User blockchain `address`
           schema:
             type: string
         - name: isTest
@@ -171,44 +171,44 @@ paths:
             type: integer
       responses:
         '200':
-          description: State
+          description: 'Mapping between a staking contract address (used as a key) and its data (like description, APR, links, ...)'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/incentives'
   /v1/perpetuals:
     get:
-      description: Return data related to perpetuals of a given user
+      description: Return data related to the perpetuals of a given user
       parameters:
         - name: user
           in: query
-          description: User Blockchain `address`
+          description: User blockchain `address`
           schema:
             type: string
         - name: chainId
           in: query
-          description: Chain of the contract - Default 1
+          description: Chain requested - Default is 1 (Ethereum mainnet)
           schema:
             type: integer
       responses:
         '200':
-          description: State
+          description: List of all the perpetuals controlled by the user on that chain
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/perpetuals'
   /v1/vaultManagers:
     get:
-      description: Return the global state of `VaultManagers` listed by the treasury
+      description: Return the global state of `VaultManagers` listed by the treasuries associated to a stablecoin
       parameters:
         - name: chainId
           in: query
-          description: ChainId - Default 1
+          description: Chain requested - Default is 1 (Ethereum mainnet)
           schema:
             type: integer
       responses:
         '200':
-          description: State
+          description: List of all `VaultManager` with their details
           content:
             application/json:
               schema:
@@ -221,17 +221,17 @@ paths:
       parameters:
         - name: user
           in: query
-          description: User Blockchain `address`
+          description: User blockchain `address`
           schema:
             type: string
         - name: chainId
           in: query
-          description: Chain of the contract - Default 1
+          description: Chain requested - Default is 1 (Ethereum mainnet)
           schema:
             type: integer
       responses:
         '200':
-          description: State
+          description: List of all the vaults for a given user on-chain
           content:
             application/json:
               schema:
@@ -246,36 +246,38 @@ components:
   schemas:
     tokens:
       type: object
-      properties:
-        name:
-          type: string
-          description: Token's name
-        address:
-          type: string
-          description: Token's address
-        decimals:
-          type: number
-          description: ERC20 decimals
-        symbol:
-          type: string
-          description: Token's symbol
-        useInSwap:
-          type: boolean
-          description: Whether this token is used in Angle swaps
-        hasPermit:
-          type: boolean
-          description: Whether the token supports permit
-        permitVersion:
-          type: string
-          description: 'Permit version, otherwise ''-1'''
-        logoURI:
-          type: string
-          description: Logo URI
-        tags:
-          type: array
-          items:
+      additionalProperties:
+        type: object
+        properties:
+          name:
             type: string
-          description: Token tags
+            description: Token name
+          address:
+            type: string
+            description: Token address
+          decimals:
+            type: number
+            description: ERC20 decimals
+          symbol:
+            type: string
+            description: Token symbol
+          useInSwap:
+            type: boolean
+            description: Whether this token is used in Angle swaps
+          hasPermit:
+            type: boolean
+            description: Whether the token supports permit
+          permitVersion:
+            type: string
+            description: 'Permit version, otherwise ''-1'''
+          logoURI:
+            type: string
+            description: Logo URI
+          tags:
+            type: array
+            items:
+              type: string
+            description: Token tags
     prices:
       type: array
       items:
@@ -286,7 +288,7 @@ components:
             description: Token symbol
           rate:
             type: number
-            description: 'Token price, in USD'
+            description: Token price (in USD)
     allowances:
       type: array
       items:
@@ -305,21 +307,27 @@ components:
       properties:
         totalSupply:
           type: number
+          description: Total supply of the ANGLE token
         circulatingSupply:
           type: number
+          description: Circulating supply of the ANGLE
         balance:
           type: string
+          description: ANGLE balance of the user
     apr:
       type: object
-      additionalProperties:
-        type: object
-        properties:
-          value:
+      properties:
+        value:
+          type: number
+          description: Value of the APR with the token
+        address:
+          type: string
+          description: 'Optional, it is the address associated to the token name'
+        details:
+          type: object
+          additionalProperties:
             type: number
-          details:
-            type: object
-            additionalProperties:
-              type: number
+            description: 'These additional properties can be the APR from fees, the APR from interest, the min ANGLE rewards you can get or the ANGLE rewards with max boost'
     balances:
       type: array
       items:
@@ -333,13 +341,18 @@ components:
             balance:
               type: string
               description: Token balance
+            decimals:
+              type: number
+              description: Number of decimals of the token
     gauges:
       type: object
       properties:
         totalWeight:
           type: number
+          description: Total veANGLE voting power used to vote for gauges
         voteUserPower:
           type: number
+          description: Total voting power of the user used across all gauges
         list:
           type: object
           additionalProperties:
@@ -347,34 +360,49 @@ components:
             properties:
               address:
                 type: string
+                description: Gauge address
               name:
                 type: string
+                description: Gauge name
               icon:
                 type: string
+                description: Shortened symbol of the gauge
               type:
                 type: number
+                description: Type of the gauge in the whole system
               currentWeight:
                 type: number
+                description: Share of overall ANGLE emissions allocated to this gauge for the current week
               absoluteWeight:
                 type: number
+                description: Total veANGLE voting power for this gauge
               futureWeight:
                 type: number
+                description: Share of overall ANGLE emissions that is going to go to this gauge next week
               userWeight:
                 type: number
+                description: Share of the user's voting power used for this gauge
               lastUserVote:
                 type: number
+                description: Amount of veANGLE with which the user voted for this gauge
               tvl:
                 type: number
+                description: USD value in this gauge
               apr:
                 type: number
+                description: Minimum ANGLE boost for participating in this gauge (this APR does not include that the token natively staked may have)
               workingSupply:
                 type: number
+                description: Working supply in the gauge contract
               totalSupply:
                 type: number
+                description: Total supply of the gauge contract
               workingBalance:
                 type: number
+                description: Working balance of the user in the gauge (it's the balance corrected by the veANGLE boost)
               balance:
                 type: number
+                description: Balance of the user in the gauge contract
     incentives:
       type: object
       additionalProperties:
@@ -382,21 +410,28 @@ components:
         properties:
           address:
             type: string
+            description: Address of the staking contract
           name:
             type: string
+            description: Name of the farm
           deprecated:
             type: boolean
+            description: Whether the farm is deprecated or not
           underlyingToken:
             type: object
             properties:
               balances:
                 type: string
+                description: Balance of the user of the underlying staking token
               allowance:
                 type: string
+                description: Allowance of the user for the underlying staking token to the staking contract
               address:
                 type: string
+                description: Address of the token to stake
               base:
                 type: number
+                description: Base of the staking token
           rewardTokens:
             type: array
             items:
@@ -404,32 +439,41 @@ components:
               properties:
                 symbol:
                   type: string
+                  description: Symbol of the reward token
                 address:
                   type: string
+                  description: Address of the reward token
                 amount:
                   type: number
           network:
             type: number
+            description: Network where the incentive is given
           platform:
             type: string
+            description: Platform where staking is taking place
           icon:
             type: string
+            description: Icon of the staking platform
           tvl:
             type: number
+            description: TVL in the staking contract
           deposit:
             type: object
             properties:
               amount:
                 type: string
+                description: User deposited amount
               usdValue:
                 type: number
+                description: USD value of the user amount in the farm
           apr:
             type: object
             properties:
-              apr:
+              details:
                 type: object
               value:
                 type: number
+                description: Value of the APR
     perpetuals:
       type: object
       additionalProperties:
@@ -439,40 +483,58 @@ components:
             type: string
           perpetualID:
             type: string
+            description: ID of the perpetual
           owner:
             type: string
+            description: Owner of the perpetual
           margin:
             type: string
+            description: Margin of the perp
           committedAmount:
             type: string
+            description: Committed amount in the perp
           entryRate:
             type: string
+            description: Oracle rate at which the perpetual was created
           perpetualManager:
             type: string
+            description: Address of the corresponding `PerpetualManager`
           stableAddress:
             type: string
+            description: Address of the corresponding stablecoin
           collatAddress:
             type: string
+            description: Address of the corresponding collateral
           decimals:
             type: string
+            description: Decimals of the corresponding collateral
           stableName:
             type: string
+            description: Name of the associated stablecoin
           collatName:
             type: string
+            description: Name of the associated collateral
           liquidationPrice:
             type: string
+            description: Price at which the perp may get liquidated
           openingBlockNumber:
             type: string
+            description: Block number at which the perp was opened
           openingTimestamp:
             type: string
+            description: Opening timestamp of the perp
           lastUpdateBlockNumber:
             type: string
+            description: Block number at which the perp was last updated
           lastUpdateTimestamp:
             type: string
+            description: Timestamp at which the perp was last updated
           status:
             type: string
+            description: Whether the perpetual is open or close
           claimable:
             type: number
+            description: Amount of claimable ANGLE tokens
     rewardsData:
       type: object
       properties:
@@ -480,16 +542,20 @@ components:
           type: array
           items:
             type: number
+            description: Timestamp at which the `FeeDistributor` contract was checkpointed for the corresponding week. Each item in the array corresponds to a new week.
         tokenPerWeek:
           type: array
           items:
             type: number
+            description: Amount of sanUSDC_EUR distributed in the corresponding week. Each item in the array corresponds to a new week.
         claimable:
           type: array
           items:
             type: number
+            description: Amount claimable by the user for the week of interest. Each item in the array corresponds to a new week.
         totalClaimable:
           type: string
+          description: Total amount of tokens still claimable by the user in the contract
     pools:
       type: object
       additionalProperties:
@@ -497,96 +563,138 @@ components:
         properties:
           collateralSymbol:
             type: string
+            description: Symbol of the associated collateral token
           stablecoinSymbol:
             type: string
+            description: Symbol of the associated stablecoin
           decimals:
             type: number
+            description: Decimals of the associated collateral token
           liquidityGaugeAddress:
             type: string
+            description: Address (if any) of the corresponding liquidity gauge address
           perpetualManagerAddress:
             type: string
+            description: Address of the corresponding `PerpetualManager` contract
           poolManagerAddress:
             type: string
           collateralAddress:
             type: string
+            description: Address of the corresponding collateral
           stablecoinAddress:
             type: string
+            description: Address of the corresponding stablecoin
           lower:
             type: string
+            description: Lower oracle rate value
           upper:
             type: string
+            description: Upper oracle rate value
           stocksUsers:
             type: string
+            description: Amount of stablecoins that have been minted using this collateral
           collatRatio:
             type: string
+            description: Collateral ratio of the associated stablecoin for the Core Module
           sanRate:
             type: string
+            description: Exchange rate between the associated collateral and the stablecoin
           slpData:
             type: object
             properties:
               slippage:
                 type: string
+                description: Slippage faced by Standard Liquidity Providers
           poolManagerBalance:
             type: string
+            description: Collateral balance of the `PoolManager` contract
           totalHedgeAmount:
             type: string
+            description: Amount of stablecoins hedged by Hedging Agents
           targetHAHedge:
             type: string
+            description: 'Target HAs hedge ratio, it is compared to the ratio between the total hedge amount and the stocks users'
           limitHAHedge:
             type: string
+            description: 'Limit HAs hedge ratio, it is compared to the ratio between the total hedge amount and the stocks users'
           maintenanceMargin:
             type: string
+            description: Maintenance margin for this collateral
           maxLeverage:
             type: string
+            description: Max leverage allowed in the corresponding perps
           lockTime:
             type: string
+            description: Lock time once a perp is opened
           perpRewardRate:
             type: string
+            description: ANGLE token reward rate for associated perpetual owners
           periodFinish:
             type: string
+            description: Time at which ANGLE rewards are going to cease
           aprFromFees:
             type: number
+            description: APR for SLPs from transaction fees
           aprFromInterests:
             type: number
+            description: APR for SLPs from interest
           aprFromAngle:
             type: number
+            description: APR for SLPs from ANGLE tokens
           stablecoinBalance:
             type: string
+            description: User stablecoin balance
           collateralBalance:
             type: string
+            description: User collateral balance
           sanTokenBalance:
             type: string
+            description: User sanToken balance
           gaugeBalance:
             type: string
+            description: User balance in the gauge potentially associated to the sanToken
           gaugeWorkingBalance:
             type: string
+            description: User working balance in the gauge associated to the sanToken
           boost:
             type: number
+            description: User boost in the gauge
           theoricBoost:
             type: number
+            description: Theoric boost the user could get based on its veANGLE balance
           collateralAllowance:
             type: string
+            description: Allowance by the user for the collateral token to the `StableMaster` contract
           collateralRouterAllowance:
             type: string
+            description: Allowance by the user for the collateral token to the router contract
     veANGLE:
       type: object
       properties:
         totalSupply:
           type: number
+          description: Total supply of the token
         totalLocked:
           type: number
+          description: Amount of ANGLE token locked
         rate:
           type: number
+          description: ANGLE emission rate per second
         nextRate:
           type: number
+          description: ANGLE emission rate per second next week
         locked:
           type: number
+          description: Amount of ANGLE tokens locked by the users
         endLock:
           type: number
+          description: Timestamp at which the lock should end
         balance:
           type: string
+          description: User veANGLE balance
         allowance:
           type: string
+          description: Allowance for the ANGLE token to the veANGLE contract by the user
     vaultManagers:
       type: object
       additionalProperties:
@@ -594,27 +702,31 @@ components:
         properties:
           address:
             type: string
-            description: address of the `VaultManager`
+            description: Address of the `VaultManager`
           symbol:
             type: string
-            description: symbol of the `VaultManager`
+            description: Symbol of the `VaultManager`
           collateral:
             type: number
             description: Address of the collateral token
           collateralHasPermit:
             type: boolean
+            description: Whether the collateral token supports permit
           collateralPermitVersion:
             type: number
+            description: Permit version used in case of
           stablecoin:
             type: string
             description: Address of the minted stablecoin
           swapper:
             type: string
+            description: Address of the swapper contract recommended by the protocol
           decimals:
             type: string
+            description: Decimals of the collateral token
           treasury:
             type: string
-            description: Address of the treasury
+            description: Address of the Treasury
           borrowFee:
             type: number
             description: Percentage of up-front fees
@@ -638,6 +750,7 @@ components:
             description: Total debt on the contract
           rate:
             type: number
+            description: Underlying oracle price
     vaults:
       type: object
       additionalProperties:
@@ -645,10 +758,10 @@ components:
         properties:
           address:
             type: string
-            description: address of the `VaultManager`
+            description: Address of the corresponding `VaultManager`
           symbol:
             type: string
-            description: symbol of the `VaultManager`
+            description: Symbol of the `VaultManager`
           id:
             type: number
             description: ERC721 standard `tokenID`
