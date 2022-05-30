@@ -2,22 +2,22 @@ openapi: 3.0.0
 info:
   version: 1.0.0
   title: Angle API
-  description: API to track Angle Protocol state
+  description: API to track the Angle Protocol state
 servers:
   - url: 'https://api.angle.money'
 paths:
   /v1/app:
     get:
-      description: Return Prices and Tokens used by Angle Protocol
+      description: Return data about tokens at stake in the Angle Protocol along with their price.
       parameters:
         - name: chainId
           in: query
-          description: Chain requested - Default 1
+          description: Chain requested - Default is 1 (Ethereum mainnet)
           schema:
             type: integer
       responses:
         '200':
-          description: State
+          description: Maps token addresses on the requested chain to their associated data and returns a list of pairs of tokens identified by their name with their price (in USD).
           content:
             application/json:
               schema:
@@ -29,94 +29,94 @@ paths:
                     $ref: '#/components/schemas/prices'
   /v1/prices:
     get:
-      description: Return Prices used by Angle Protocol
+      description: Return prices for tokens used by the Angle Protocol.
       parameters:
         - name: chainId
           in: query
-          description: Chain requested - Default 1
+          description: Chain requested - Default is 1 (Ethereum mainnet)
           schema:
             type: integer
       responses:
         '200':
-          description: State
+          description: List of pairs of tokens identified by their name with their price (in USD).
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/prices'
   /v1/apr:
     get:
-      description: Return APRs computed by Angle Protocol - use cautiously data may be inaccurate
+      description: Return APRs for tokens used by the Angle Protocol. Data is based on approximations, it should be cautiously taken.
       responses:
         '200':
-          description: State
+          description: Mapping between a token name and the overall APR you can get with it and optionally a breakdown on the APR displayed
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/apr'
   /v1/balances:
     get:
-      description: Return the balances for tokens in the for Angle token list
+      description: Return the balances for tokens in the for Angle token list for a given user.
       parameters:
         - name: user
           in: query
-          description: User Blockchain `address`
+          description: User blockchain `address`
           schema:
             type: string
         - name: chainId
           in: query
-          description: Chain of the contract - Default 1
+          description: Chain requested - Default is 1 (Ethereum mainnet)
           schema:
             type: integer
       responses:
         '200':
-          description: State
+          description: Mapping between a token address and for each token the user balance, the decimals of the token as well as the token name
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/balances'
   /v1/allowances:
     get:
-      description: Return the allowances for tokens in the for Angle token list
+      description: Return the allowances for tokens in the for Angle token list for a given user
       parameters:
         - name: user
           in: query
-          description: User Blockchain `address`
+          description: User blockchain `address`
           schema:
             type: string
         - name: spender
           in: query
-          description: Sender Blockchain `address`
+          description: Spender blockchain `address`
           schema:
             type: string
         - name: chainId
           in: query
-          description: Chain of the contract - Default 1
+          description: Chain requested - Default is 1 (Ethereum mainnet)
           schema:
             type: integer
       responses:
         '200':
-          description: State
+          description: Mapping between a token address and for each token the allowance of the user with respect to the spender, the decimals of the token as well as the token symbol
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/allowances'
   /v1/dao:
     get:
-      description: Return data related to the ANGLE and veANGLE tokens for a given user including vote and rewards data
+      description: Return data related to gauges as well as to the ANGLE and veANGLE tokens for a given user including vote and rewards data
       parameters:
         - name: chainId
           in: query
-          description: Chain requested - Default 1
+          description: Chain requested - Default is 1 (Ethereum mainnet)
           schema:
             type: integer
         - name: user
           in: query
-          description: User Blockchain `address`
+          description: User blockchain `address`. This address is optional and the query could work without.
           schema:
             type: string
       responses:
         '200':
-          description: State
+          description: Success
           content:
             application/json:
               schema:
@@ -140,17 +140,17 @@ paths:
       parameters:
         - name: user
           in: query
-          description: User Blockchain `address`
+          description: User blockchain `address`
           schema:
             type: string
         - name: chainId
           in: query
-          description: Chain of the contract - Default 1
+          description: Chain requested - Default is 1 (Ethereum mainnet)
           schema:
             type: integer
       responses:
         '200':
-          description: State
+          description: Success
           content:
             application/json:
               schema:
@@ -161,7 +161,7 @@ paths:
       parameters:
         - name: user
           in: query
-          description: User Blockchain `address`
+          description: User blockchain `address`
           schema:
             type: string
         - name: isTest
@@ -171,7 +171,7 @@ paths:
             type: integer
       responses:
         '200':
-          description: State
+          description: Success
           content:
             application/json:
               schema:
@@ -182,17 +182,17 @@ paths:
       parameters:
         - name: user
           in: query
-          description: User Blockchain `address`
+          description: User blockchain `address`
           schema:
             type: string
         - name: chainId
           in: query
-          description: Chain of the contract - Default 1
+          description: Chain requested - Default is 1 (Ethereum mainnet)
           schema:
             type: integer
       responses:
         '200':
-          description: State
+          description: Success
           content:
             application/json:
               schema:
@@ -203,12 +203,12 @@ paths:
       parameters:
         - name: chainId
           in: query
-          description: ChainId - Default 1
+          description: Chain requested - Default is 1 (Ethereum mainnet)
           schema:
             type: integer
       responses:
         '200':
-          description: State
+          description: Success
           content:
             application/json:
               schema:
@@ -221,17 +221,17 @@ paths:
       parameters:
         - name: user
           in: query
-          description: User Blockchain `address`
+          description: User blockchain `address`
           schema:
             type: string
         - name: chainId
           in: query
-          description: Chain of the contract - Default 1
+          description: Chain requested - Default is 1 (Ethereum mainnet)
           schema:
             type: integer
       responses:
         '200':
-          description: State
+          description: Success
           content:
             application/json:
               schema:
@@ -246,36 +246,39 @@ components:
   schemas:
     tokens:
       type: object
-      properties:
-        name:
-          type: string
-          description: Token's name
-        address:
-          type: string
-          description: Token's address
-        decimals:
-          type: number
-          description: ERC20 decimals
-        symbol:
-          type: string
-          description: Token's symbol
-        useInSwap:
-          type: boolean
-          description: Whether this token is used in Angle swaps
-        hasPermit:
-          type: boolean
-          description: Whether the token supports permit
-        permitVersion:
-          type: string
-          description: 'Permit version, otherwise ''-1'''
-        logoURI:
-          type: string
-          description: Logo URI
-        tags:
-          type: array
-          items:
+      additionalProperties:
+        type: object
+        properties:
+          name:
             type: string
-          description: Token tags
+            description: Token name
+          address:
+            type: string
+            description: Token address
+          decimals:
+            type: number
+            description: ERC20 decimals
+          symbol:
+            type: string
+            description: Token symbol
+          useInSwap:
+            type: boolean
+            description: Whether this token is used in Angle swaps
+          hasPermit:
+            type: boolean
+            description: Whether the token supports permit
+          permitVersion:
+            type: string
+            description: Permit version, otherwise '-1'
+          logoURI:
+            type: string
+            description: Logo URI
+          tags:
+            type: array
+            items:
+              type: string
+            description: Token tags
+
     prices:
       type: array
       items:
@@ -286,7 +289,8 @@ components:
             description: Token symbol
           rate:
             type: number
-            description: 'Token price, in USD'
+            description: Token price (in USD)
+
     allowances:
       type: array
       items:
@@ -305,21 +309,28 @@ components:
       properties:
         totalSupply:
           type: number
+          description: Total supply of the ANGLE token
         circulatingSupply:
           type: number
+          description: Circulating supply of the ANGLE
         balance:
           type: string
+          description: ANGLE balance of the user
     apr:
       type: object
-      additionalProperties:
-        type: object
-        properties:
-          value:
+      properties:
+        value:
+          type: number
+          description: Value of the APR with the token
+        address:
+          type: string
+          description: Optional, it is the address associated to the token name
+        details:
+          type: object
+          additionalProperties:
             type: number
-          details:
-            type: object
-            additionalProperties:
-              type: number
+            description: These additional properties can be the APR from fees, the APR from interest, the min ANGLE rewards you can get or the ANGLE rewards with max boost
+
     balances:
       type: array
       items:
@@ -333,6 +344,9 @@ components:
             balance:
               type: string
               description: Token balance
+            decimals:
+              type: number
+              description: Number of decimals of the token
     gauges:
       type: object
       properties:
@@ -347,34 +361,49 @@ components:
             properties:
               address:
                 type: string
+                description: Gauge address
               name:
                 type: string
+                description: Gauge name
               icon:
                 type: string
+                description: Shortened symbol of the gauge
               type:
                 type: number
+                description: Type of the gauge in the whole system
               currentWeight:
                 type: number
+                description: Share of overall ANGLE emissions allocated to this gauge for the current week
               absoluteWeight:
                 type: number
+                description: Total veANGLE voting power for this gauge
               futureWeight:
                 type: number
+                description: Share of overall ANGLE emissions that is going to go to this gauge next week
               userWeight:
                 type: number
+                description: Share of the user's voting power used for this gauge
               lastUserVote:
                 type: number
+                description: Amount of veANGLE with which the user voted for this gauge
               tvl:
                 type: number
+                description: USD value in this gauge
               apr:
                 type: number
+                description: Minimum ANGLE boost for participating in this gauge (this APR does not include that the token natively staked may have)
               workingSupply:
                 type: number
+                description: Working supply in the gauge contract
               totalSupply:
                 type: number
+                description: Total supply of the gauge contract
               workingBalance:
                 type: number
+                description: Working balance of the user in the gauge (it's the balance corrected by the veANGLE boost)
               balance:
                 type: number
+                description: Balance of the user in the gauge contract
     incentives:
       type: object
       additionalProperties:
@@ -573,20 +602,28 @@ components:
       properties:
         totalSupply:
           type: number
+          description: Total supply of the token
         totalLocked:
           type: number
+          description: Amount of ANGLE token locked
         rate:
           type: number
+          description: ANGLE emission rate per second
         nextRate:
           type: number
+          description: ANGLE emission rate per second next week
         locked:
           type: number
+          description: Amount of ANGLE tokens locked by the users
         endLock:
           type: number
+          description: Timestamp at which the lock should end
         balance:
           type: string
+          description: User veANGLE balance
         allowance:
           type: string
+          description: Allowance for the ANGLE token to the veANGLE contract by the user
     vaultManagers:
       type: object
       additionalProperties:
