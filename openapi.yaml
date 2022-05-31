@@ -294,15 +294,16 @@ components:
       items:
         additionalProperties:
           type: object
+          properties:
+            decimals:
+              type: string
+              description: Token decimals
           additionalProperties:
             type: object
             properties:
               allowance:
                 type: string
                 description: Token allowance
-              decimals:
-                type: string
-                description: Token decimals
     ANGLE:
       type: object
       properties:
