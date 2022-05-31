@@ -290,18 +290,19 @@ components:
             type: number
             description: Token price (in USD)
     allowances:
-      type: array
+      type: object
       items:
-        type: object
         additionalProperties:
           type: object
-          properties:
-            symbol:
-              type: string
-              description: Token symbol
-            allowance:
-              type: string
-              description: Token allowance
+          additionalProperties:
+            type: object
+            properties:
+              allowance:
+                type: string
+                description: Token allowance
+              decimals:
+                type: string
+                description: Token decimals
     ANGLE:
       type: object
       properties:
