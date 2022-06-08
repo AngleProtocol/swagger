@@ -738,6 +738,9 @@ components:
           liquidationPenalty:
             type: number
             description: Percentage of penalty on liquidated debt
+          maxLTV:
+            type: number
+            description: Max debt value versus collateral value
           minCollateralRatio:
             type: number
             description: Min percentage of collateral versus debt
