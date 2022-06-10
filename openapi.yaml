@@ -266,7 +266,6 @@ paths:
       responses:
         '200':
           description: Angle TVL on the requested chain
-
 components:
   securitySchemes:
     BasicAuth:
