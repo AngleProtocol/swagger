@@ -238,6 +238,35 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/vaults'
+  /v1/volume:
+    get:
+      description: Return data related to the agEUR volume on a given chain
+      parameters:
+        - name: chainId
+          in: query
+          description: Chain requested
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: agEUR volume and circulating supply data on the requested chain
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/volume'
+  /v1/tvl: null
+  get:
+    description: Return the TVL of the Angle Protocol on the requested chain
+    parameters:
+      - name: chainId
+        in: query
+        description: Chain requested - Default is 1 (Ethereum mainnet)
+        schema:
+          type: integer
+    responses:
+      '200':
+        description: TVL on the requested chain
+        type: number
 components:
   securitySchemes:
     BasicAuth:
@@ -794,3 +823,18 @@ components:
           liquidationPrice:
             type: number
             description: 'Current liquidation price threshold, in USD'
+    volume:
+      type: object
+      properties:
+        circulatingSupply:
+          type: number
+          description: Total circulating supply of the token
+        holder:
+          type: number
+          description: Number of addresses holding the token
+        rate:
+          type: number
+          description: Per second increase rate of the agEUR volume over the last 30 minutes based on `Transfer` event
+        volume:
+          type: number
+          description: Per second agEUR volume based on `Transfer` event
