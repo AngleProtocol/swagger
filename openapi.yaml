@@ -265,8 +265,8 @@ paths:
             type: integer
       responses:
         '200':
-          description: TVL on the requested chain
-          type: number
+          description: Angle TVL on the requested chain
+
 components:
   securitySchemes:
     BasicAuth:
