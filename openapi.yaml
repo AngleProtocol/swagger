@@ -254,19 +254,19 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/volume'
-  /v1/tvl: null
-  get:
-    description: Return the TVL of the Angle Protocol on the requested chain
-    parameters:
-      - name: chainId
-        in: query
-        description: Chain requested - Default is 1 (Ethereum mainnet)
-        schema:
-          type: integer
-    responses:
-      '200':
-        description: TVL on the requested chain
-        type: number
+  /v1/tvl:
+    get:
+      description: Return the TVL of the Angle Protocol on the requested chain
+      parameters:
+        - name: chainId
+          in: query
+          description: Chain requested - Default is 1 (Ethereum mainnet)
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: TVL on the requested chain
+          type: number
 components:
   securitySchemes:
     BasicAuth:
@@ -298,7 +298,7 @@ components:
             description: Whether the token supports permit
           permitVersion:
             type: string
-            description: 'Permit version, otherwise ''-1'''
+            description: "Permit version, otherwise '-1'"
           logoURI:
             type: string
             description: Logo URI
